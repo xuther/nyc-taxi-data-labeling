@@ -1,0 +1,23 @@
+{
+  "indicies-to-keep": [
+    1,2,5,6,9,10
+  ],
+  "labeling-routines": 4,
+  "original-featureset-size": 19,
+  "start-x": 5,
+  "start-y": 6,
+  "end-x": 9,
+  "end-y": 10,
+  "input-file": "C:/Users/joseph/Documents/Code/BigData/Neighborhoods/data/taxi/2016/jan/yellow_tripdata_2016-01.csv",
+  "output-file": "C:/Users/joseph/Documents/Code/BigData/Neighborhoods/data/out/2016/jan/output.csv",
+  "failed-output-file": "C:/Users/joseph/Documents/Code/BigData/Neighborhoods/data/out/2016/jan/failed.csv",
+  "dropped-output-file": "C:/Users/joseph/Documents/Code/BigData/Neighborhoods/data/out/2016/jan/dropped.csv",
+  "features-added": [
+    "start-county",
+    "start-tract",
+    "start-block",
+    "end-county",
+    "end-tract",
+    "end-block"
+  ]
+}
