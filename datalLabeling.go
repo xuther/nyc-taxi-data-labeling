@@ -89,6 +89,10 @@ func main() {
 		log.Printf("%v rows dropped in last 5 seconds", numberDropped-oldDropped)
 		log.Printf("%v rows failed in last 5 seconds", numberFailed-oldFailed)
 
+		//For profiling/debugging
+		log.Printf("%v items in the input queue.", len(preChannel))
+		log.Printf("%v items in the output queue.\n", len(postChannel))
+
 		oldStarted = numberStarted
 		oldSaved = numberSaved
 		oldDropped = numberDropped
