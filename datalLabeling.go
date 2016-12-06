@@ -47,7 +47,7 @@ func main() {
 
 	fmt.Printf("Beginning Labelling ")
 	fmt.Printf("Using %v max processors.\n", runtime.NumCPU())
-	fmt.Printf("Using %b labeling routines.\n", Config.LabelingRoutines)
+	fmt.Printf("Using %v labeling routines.\n", Config.LabelingRoutines)
 
 	channelSize := 250
 	//make our channels
@@ -68,7 +68,7 @@ func main() {
 	go saveFailed(failedChannel)
 	go saveDropped(droppedChannel)
 
-	for i := 0; i < Config.LabelingRoutines; i++ {
+	for i := 0; i < 100; i++ {
 		go labeler(preChannel, postChannel, failedChannel, droppedChannel)
 	}
 
@@ -312,7 +312,7 @@ func labelValue(row []string) ([]string, error) {
 	}
 	row = append(row, tract)
 
-	block, err := findBlock(x, y, tract)
+	block, err := findBlock(x, y, county, tract)
 	if err != nil {
 		return []string{}, errors.New("Unable to find Start Block")
 	}
@@ -340,7 +340,7 @@ func labelValue(row []string) ([]string, error) {
 	}
 	row = append(row, tract)
 
-	block, err = findBlock(x, y, tract)
+	block, err = findBlock(x, y, county, tract)
 	if err != nil {
 		return []string{}, errors.New("Unable to find End Block")
 	}

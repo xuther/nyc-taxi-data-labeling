@@ -30,8 +30,8 @@ func findTract(x float64, y float64, county string) (string, error) {
 	return "", errors.New("Unable to find Tract\n")
 }
 
-func findBlock(x float64, y float64, tract string) (string, error) {
-	for _, i := range BlocksToTracts[tract] {
+func findBlock(x float64, y float64, county string, tract string) (string, error) {
+	for _, i := range BlocksToTracts[county+"-"+tract] {
 		//log.Printf("Checking block %v.\n", blocks[i].BlockID)
 		if pointInPoly(x, y, blocks[i].Points) {
 			return blocks[i].BlockID, nil

@@ -54,10 +54,10 @@ func mapBlocksToTracts() (tractToBlock map[string][]int) {
 	tractToBlock = make(map[string][]int)
 
 	for i := range blocks {
-		if _, ok := tractToBlock[blocks[i].TractID]; ok {
-			tractToBlock[blocks[i].TractID] = append(tractToBlock[blocks[i].TractID], i)
+		if _, ok := tractToBlock[blocks[i].CountyID+"-"+blocks[i].TractID]; ok {
+			tractToBlock[blocks[i].CountyID+"-"+blocks[i].TractID] = append(tractToBlock[blocks[i].CountyID+"-"+blocks[i].TractID], i)
 		} else {
-			tractToBlock[blocks[i].TractID] = []int{i}
+			tractToBlock[blocks[i].CountyID+"-"+blocks[i].TractID] = []int{i}
 		}
 	}
 	return
