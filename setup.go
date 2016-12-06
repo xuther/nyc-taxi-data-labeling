@@ -5,9 +5,8 @@ import (
 	"io/ioutil"
 )
 
-const baseLocation string = "C:/Users/joseph/Documents/Code/BigData/Neighborhoods/data/census/"
-
 func getCensusData() (counties []County, tracts []Tract, blocks []Block, err error) {
+	baseLocation := Config.JsonFileLocation + "/"
 	b, err := ioutil.ReadFile(baseLocation + "countyData.json")
 	if err != nil {
 		return
@@ -44,6 +43,7 @@ func importConfig(path string) (config configuration) {
 	if err != nil {
 		panic(err)
 	}
+
 	err = json.Unmarshal(b, &config)
 
 	return
