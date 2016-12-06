@@ -64,6 +64,7 @@ type configuration struct {
 	StartX                 int      `json:"start-x"`
 	StartY                 int      `json:"start-y"`
 	EndX                   int      `json:"end-x"`
+	JsonFileLocation       string   `json:"json-file-location"`
 	EndY                   int      `json:"end-y"`
 	InputAddress           string   `json:"input-file"`
 	OutputAddress          string   `json:"output-file"`

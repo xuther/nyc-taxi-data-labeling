@@ -47,7 +47,7 @@ func main() {
 
 	fmt.Printf("Beginning Labelling ")
 	fmt.Printf("Using %v max processors.\n", runtime.NumCPU())
-	fmt.Printf("Using %b labeling routines.\n", Config.LabelingRoutines)
+	fmt.Printf("Using %v labeling routines.\n", Config.LabelingRoutines)
 
 	channelSize := 250
 	//make our channels
