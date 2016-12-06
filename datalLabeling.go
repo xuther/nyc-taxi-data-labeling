@@ -68,7 +68,7 @@ func main() {
 	go saveFailed(failedChannel)
 	go saveDropped(droppedChannel)
 
-	for i := 0; i < 100; i++ {
+	for i := 0; i < Config.LabelingRoutines; i++ {
 		go labeler(preChannel, postChannel, failedChannel, droppedChannel)
 	}
 
