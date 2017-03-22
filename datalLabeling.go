@@ -6,6 +6,7 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"os"
 	"runtime"
@@ -28,15 +29,25 @@ var BlocksToTracts map[string][]int
 var TractsToCounties map[string][]int
 
 func main() {
-	var configAddress = flag.String("configAddress", "./config.json", "Configuration File")
+	f, err := os.OpenFile("./logout.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+
+	log.SetOutput(f)
+	var configAddress = flag.String("c", "./config.json", "Configuration File")
+	flag.Parse()
+
+	fmt.Printf("Config file: %s\n", *configAddress)
 
 	Config = importConfig(*configAddress)
 
-	var err error
 	counties, tracts, blocks, err = getCensusData()
 	if err != nil {
 		panic(err)
 	}
+
 	fmt.Printf("Found %v couties\nFound %v tracts\nFound %v blocks", len(counties), len(tracts), len(blocks))
 
 	BlocksToTracts = mapBlocksToTracts()
@@ -195,41 +206,59 @@ func saveDropped(droppedChan <-chan []string) {
 }
 
 func readIntoChannel(outChan chan<- []string, headerChan chan<- []string) {
-	log.Printf("Using input file: %v\n", Config.InputAddress)
-	f, err := os.Open(Config.InputAddress)
+	log.Printf("Using input folder: %v\n", Config.InputAddress)
+	headerRead := false
+	files, err := ioutil.ReadDir(Config.InputAddress)
 	if err != nil {
-		log.Printf("Error opening input file:\n")
-		log.Printf("Error details %v:\n", err.Error())
+		log.Printf("Error reading input directory")
 		panic(err)
 	}
-
-	reader := csv.NewReader(f)
-
-	//read the header data in first.
-	row, err := reader.Read()
-	if err != nil {
-		fmt.Printf("Error reading csv headers.")
-		panic(err)
+	log.Printf("Files in directory:")
+	for i := range files {
+		log.Printf("%s", files[i].Name())
 	}
-	headerChan <- row
+	for _, file := range files {
 
-	for {
-		row, err := reader.Read()
+		log.Printf("Opening file %s", Config.InputAddress+file.Name())
+		f, err := os.Open(Config.InputAddress + "/" + file.Name())
 		if err != nil {
-			if err == io.EOF {
-				return
-			}
-			fmt.Printf("Error reading in csv: %v\n", err.Error())
-			fmt.Printf("%v lines read before error \n", numberStarted)
+			log.Printf("Error opening input file: %s", file.Name())
+			log.Printf("Error details %v:", err.Error())
 			panic(err)
 		}
-		if len(row) == 0 {
-			continue
-		}
-		outChan <- row
-		numberStarted++
-	}
 
+		reader := csv.NewReader(f)
+
+		//read the header data in first.
+		row, err := reader.Read()
+		if err != nil {
+			fmt.Printf("Error reading csv headers.")
+			panic(err)
+		}
+
+		if !headerRead {
+			headerChan <- row
+			headerRead = true
+		}
+
+		for {
+			row, err := reader.Read()
+			if err != nil {
+				if err == io.EOF {
+					log.Printf("Hit EOF, starting next file.")
+					break
+				}
+				fmt.Printf("Error reading in csv: %v\n", err.Error())
+				fmt.Printf("%v lines read before error \n", numberStarted)
+				panic(err)
+			}
+			if len(row) == 0 {
+				continue
+			}
+			outChan <- row
+			numberStarted++
+		}
+	}
 }
 
 //, outChan chan<- []string, inChan <-chan []string
